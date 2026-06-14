@@ -22,7 +22,9 @@ async function fetchOne(teamType: string, position: string, minRating: string, m
     });
     if (!res.ok) return [];
     const data = await res.json();
-    const players: Player[] = Array.isArray(data) ? data : (data.players ?? data.results ?? []);
+    const players: Player[] = Array.isArray(data)
+      ? data
+      : (data.players ?? data.results ?? data.data ?? data.items ?? []);
     return players.filter((p) => !isWNBA(p)).map((p) => enrichPlayer(p, teamType));
   } catch {
     return [];

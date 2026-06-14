@@ -22,7 +22,9 @@ export async function GET(req: NextRequest) {
     if (!res.ok) return NextResponse.json({ error: 'Upstream error' }, { status: res.status });
 
     const data = await res.json();
-    const players: Player[] = Array.isArray(data) ? data : (data.players ?? data.results ?? []);
+    const players: Player[] = Array.isArray(data)
+      ? data
+      : (data.players ?? data.results ?? data.data ?? data.items ?? []);
     const filtered = players
       .filter((p) => !isWNBA(p))
       .map((p) => enrichPlayer(p, p.teamType ?? 'curr'))
