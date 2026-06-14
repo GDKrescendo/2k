@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { getPlayerName, type Player } from '../types';
+import { getPlayerName, getPlayerImage, type Player } from '../types';
 
 interface Props {
   player: Player;
@@ -11,15 +11,15 @@ interface Props {
 
 export default function PlayerAvatar({ player, size = 48, className = '' }: Props) {
   const [imgError, setImgError] = useState(false);
-  const src = player.imageUrl ?? player.image ?? player.photo ?? '';
+  const src = getPlayerImage(player);
   const name = getPlayerName(player);
   const initials = name.split(' ').map((w) => w[0]).slice(0, 2).join('');
 
   if (!src || imgError) {
     return (
       <div
-        className={`flex items-center justify-center rounded-full bg-border text-gold font-bold select-none ${className}`}
-        style={{ width: size, height: size, fontSize: size * 0.35 }}
+        className={`flex items-center justify-center rounded-full bg-border text-gold font-bold select-none shrink-0 ${className}`}
+        style={{ width: size, height: size, fontSize: Math.round(size * 0.35) }}
       >
         {initials}
       </div>
@@ -32,7 +32,7 @@ export default function PlayerAvatar({ player, size = 48, className = '' }: Prop
       alt={name}
       width={size}
       height={size}
-      className={`rounded-full object-cover object-top ${className}`}
+      className={`rounded-full object-cover object-top shrink-0 ${className}`}
       style={{ width: size, height: size }}
       onError={() => setImgError(true)}
     />
