@@ -6,6 +6,7 @@ import RosterPanel from './components/RosterPanel';
 import SearchPane from './components/SearchPane';
 import TierPane from './components/TierPane';
 import SlotPicker from './components/SlotPicker';
+import PlayerModal from './components/PlayerModal';
 
 type Tab = 'search' | 'tier';
 
@@ -14,6 +15,7 @@ export default function Home() {
   const [tab, setTab] = useState<Tab>('search');
   const [pendingPlayer, setPendingPlayer] = useState<Player | null>(null);
   const [activeSlot, setActiveSlot] = useState<RosterPosition | null>(null);
+  const [detailPlayer, setDetailPlayer] = useState<Player | null>(null);
 
   const rosterIds = new Set(
     Object.values(roster).filter(Boolean).map((p) => p!.id ?? p!.slug ?? p!.name)
@@ -102,9 +104,9 @@ export default function Home() {
           <div className="flex-1 min-h-0 bg-surface/30 rounded-2xl border border-border p-4"
             style={{ minHeight: '70vh' }}>
             {tab === 'search' ? (
-              <SearchPane onAdd={handleAdd} isInRoster={isInRoster} />
+              <SearchPane onAdd={handleAdd} onInfo={setDetailPlayer} isInRoster={isInRoster} />
             ) : (
-              <TierPane onAdd={handleAdd} isInRoster={isInRoster} />
+              <TierPane onAdd={handleAdd} onInfo={setDetailPlayer} isInRoster={isInRoster} />
             )}
           </div>
         </div>
@@ -121,6 +123,16 @@ export default function Home() {
           </div>
         </div>
       </main>
+
+      {/* Player detail modal */}
+      {detailPlayer && (
+        <PlayerModal
+          player={detailPlayer}
+          onAdd={handleAdd}
+          isInRoster={isInRoster(detailPlayer.id ?? detailPlayer.slug ?? detailPlayer.name)}
+          onClose={() => setDetailPlayer(null)}
+        />
+      )}
 
       {/* Slot picker modal */}
       {pendingPlayer && (

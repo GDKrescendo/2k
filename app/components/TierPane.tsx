@@ -21,10 +21,11 @@ const TEAM_TYPE_LABELS: Record<TeamType, string> = {
 
 interface Props {
   onAdd: (player: Player) => void;
+  onInfo: (player: Player) => void;
   isInRoster: (id: string | number) => boolean;
 }
 
-export default function TierPane({ onAdd, isInRoster }: Props) {
+export default function TierPane({ onAdd, onInfo, isInRoster }: Props) {
   const [position, setPosition] = useState('');
   const [teamType, setTeamType] = useState<TeamType>('curr');
   const [activeTier, setActiveTier] = useState<(typeof TIERS)[number] | null>(null);
@@ -119,6 +120,7 @@ export default function TierPane({ onAdd, isInRoster }: Props) {
             key={p.id ?? p.slug ?? p.name}
             player={p}
             onAdd={onAdd}
+            onInfo={onInfo}
             isInRoster={isInRoster(p.id ?? p.slug ?? p.name)}
             compact
           />

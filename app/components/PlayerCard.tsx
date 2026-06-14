@@ -8,11 +8,28 @@ interface Props {
   player: Player;
   onAdd?: (player: Player, slot?: RosterPosition) => void;
   onRemove?: () => void;
+  onInfo?: (player: Player) => void;
   compact?: boolean;
   isInRoster?: boolean;
 }
 
-export default function PlayerCard({ player, onAdd, onRemove, compact = false, isInRoster = false }: Props) {
+function InfoBtn({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      title="View player details"
+      className="text-muted hover:text-gold transition-colors shrink-0"
+      aria-label="Player details"
+    >
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 16v-4M12 8h.01" />
+      </svg>
+    </button>
+  );
+}
+
+export default function PlayerCard({ player, onAdd, onRemove, onInfo, compact = false, isInRoster = false }: Props) {
   const name = getPlayerName(player);
   const ovr = getPlayerOvr(player);
   const team = getPlayerTeam(player);
@@ -27,6 +44,7 @@ export default function PlayerCard({ player, onAdd, onRemove, compact = false, i
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <OvrBadge ovr={ovr} size="sm" />
+          {onInfo && <InfoBtn onClick={() => onInfo(player)} />}
           {onAdd && !isInRoster && (
             <button
               onClick={() => onAdd(player)}
@@ -50,6 +68,11 @@ export default function PlayerCard({ player, onAdd, onRemove, compact = false, i
 
   return (
     <div className="relative flex flex-col items-center gap-2 p-4 rounded-xl bg-surface border border-border hover:border-gold/50 transition-all hover:gold-glow group">
+      {onInfo && (
+        <div className="absolute top-3 right-3">
+          <InfoBtn onClick={() => onInfo(player)} />
+        </div>
+      )}
       <PlayerAvatar player={player} size={72} className="ring-2 ring-border group-hover:ring-gold/40 transition-colors" />
       <div className="text-center min-w-0 w-full">
         <p className="font-bold text-sm text-white truncate">{name}</p>

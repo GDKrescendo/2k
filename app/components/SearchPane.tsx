@@ -6,10 +6,11 @@ import PlayerCard from './PlayerCard';
 
 interface Props {
   onAdd: (player: Player) => void;
+  onInfo: (player: Player) => void;
   isInRoster: (id: string | number) => boolean;
 }
 
-export default function SearchPane({ onAdd, isInRoster }: Props) {
+export default function SearchPane({ onAdd, onInfo, isInRoster }: Props) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Player[]>([]);
   const [loading, setLoading] = useState(false);
@@ -79,6 +80,7 @@ export default function SearchPane({ onAdd, isInRoster }: Props) {
             key={p.id ?? p.slug ?? p.name}
             player={p}
             onAdd={onAdd}
+            onInfo={onInfo}
             isInRoster={isInRoster(p.id ?? p.slug ?? p.name)}
             compact
           />
