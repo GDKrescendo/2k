@@ -142,6 +142,7 @@ export function enrichPlayer(p: Player, teamType?: string): Player {
   enriched.capCost = getCapCost(enriched);
   enriched.weightedScore = parseFloat(getWeightedScore(enriched).toFixed(1));
   enriched.valueScore = getValueScore(enriched);
+  if (!Array.isArray(enriched.badges)) enriched.badges = [];
   return enriched;
 }
 

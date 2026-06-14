@@ -143,7 +143,7 @@ export default function PlayerCard({
   }, [attrsOpen, slug, tt]);
 
   const displayPlayer = fullPlayer ?? player;
-  const badges = displayPlayer.badges ?? [];
+  const badges = Array.isArray(displayPlayer.badges) ? displayPlayer.badges : [];
   const hofCount = badges.filter((b) =>
     typeof b === 'string' ? b.toLowerCase().includes('hof') : (b.tier ?? '').toLowerCase().includes('hof')
   ).length;
