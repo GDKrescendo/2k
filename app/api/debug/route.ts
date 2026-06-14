@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { API_KEY, API_BASE } from '../../lib/api-config';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const url = `${API_BASE}/players/search?q=Tatum&limit=5`;
 

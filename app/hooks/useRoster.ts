@@ -18,21 +18,25 @@ export interface RosterState {
 const STORAGE_KEY = 'ghosts_war_room_roster';
 
 export function useRoster(): RosterState {
-  const [roster, setRoster] = useState<Player[]>(() => {
-    if (typeof window === 'undefined') return [];
+  const [roster, setRoster] = useState<Player[]>([]);
+  const [hydrated, setHydrated] = useState(false);
+
+  // Load from localStorage after mount to avoid SSR/client hydration mismatch
+  useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+      if (saved) setRoster(JSON.parse(saved));
+    } catch { /* ignore */ }
+    setHydrated(true);
+  }, []);
 
+  // Persist changes after initial hydration
   useEffect(() => {
+    if (!hydrated) return;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(roster));
     } catch { /* quota exceeded */ }
-  }, [roster]);
+  }, [roster, hydrated]);
 
   const capUsed = roster.reduce((sum, p) => sum + (p.capCost ?? getCapCost(p)), 0);
   const capRemaining = CAP_LIMIT - capUsed;
