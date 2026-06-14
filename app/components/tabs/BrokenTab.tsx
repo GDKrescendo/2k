@@ -179,7 +179,7 @@ export default function BrokenTab({ onAdd, onCompare, compareKeys, isInRoster, r
         setSectionData((prev) => ({ ...prev, [s.id]: data }));
         setLoading((prev) => ({ ...prev, [s.id]: false }));
       })
-    );
+    ).catch(() => {});
   }, []);
 
   const buildBrokenTeam = useCallback(async () => {

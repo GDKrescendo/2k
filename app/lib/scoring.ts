@@ -126,7 +126,7 @@ export const GAP_LABELS: Record<GapAttr, string> = {
 };
 
 export function getRosterWeaknesses(players: Player[]): Array<{ attr: GapAttr; avg: number; label: string }> {
-  if (players.length < 2) return [];
+  if (!Array.isArray(players) || players.length < 2) return [];
   return GAP_ATTRS.map((attr) => {
     const vals = players.map((p) => getAttr(p, attr)).filter((v): v is number => v != null);
     const avg = vals.length > 0 ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : 0;

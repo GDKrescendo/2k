@@ -25,7 +25,10 @@ export function useRoster(): RosterState {
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) setRoster(JSON.parse(saved));
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) setRoster(parsed);
+      }
     } catch { /* ignore */ }
     setHydrated(true);
   }, []);
