@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { enrichPlayer } from '../../lib/scoring';
+import { API_KEY, API_BASE } from '../../lib/api-config';
 import type { Player } from '../../types';
 
 const WNBA = ['liberty','fever','sky','sun','mystics','sparks','storm','aces','dream','lynx','mercury','wings','valkyries'];
@@ -13,10 +14,10 @@ export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get('q');
   if (!q?.trim()) return NextResponse.json({ error: 'Query required' }, { status: 400 });
 
-  const url = `${process.env.NBA2K_API_BASE}/players/search?q=${encodeURIComponent(q)}&limit=30`;
+  const url = `${API_BASE}/players/search?q=${encodeURIComponent(q)}&limit=30`;
   try {
     const res = await fetch(url, {
-      headers: { 'X-API-Key': process.env.NBA2K_API_KEY! },
+      headers: { 'X-API-Key': API_KEY },
       next: { revalidate: 300 },
     });
     if (!res.ok) return NextResponse.json({ error: 'Upstream error' }, { status: res.status });

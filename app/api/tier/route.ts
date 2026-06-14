@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { API_KEY, API_BASE } from '../../lib/api-config';
 
 const WNBA_TEAMS = [
   'liberty', 'fever', 'sky', 'sun', 'mystics', 'sparks',
@@ -26,11 +27,11 @@ export async function GET(req: NextRequest) {
     maxRating: max,
   });
 
-  const url = `${process.env.NBA2K_API_BASE}/players?${params}`;
+  const url = `${API_BASE}/players?${params}`;
 
   try {
     const res = await fetch(url, {
-      headers: { 'X-API-Key': process.env.NBA2K_API_KEY! },
+      headers: { 'X-API-Key': API_KEY },
       next: { revalidate: 300 },
     });
 
@@ -39,7 +40,9 @@ export async function GET(req: NextRequest) {
     }
 
     const data = await res.json();
-    const players = Array.isArray(data) ? data : (data.players ?? data.results ?? []);
+    const players = Array.isArray(data)
+      ? data
+      : (data.players ?? data.results ?? data.data ?? data.items ?? []);
     const filtered = players.filter((p: Parameters<typeof isWNBA>[0]) => !isWNBA(p));
 
     return NextResponse.json(filtered);

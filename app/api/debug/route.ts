@@ -1,21 +1,11 @@
 import { NextResponse } from 'next/server';
+import { API_KEY, API_BASE } from '../../lib/api-config';
 
 export async function GET() {
-  const base = process.env.NBA2K_API_BASE;
-  const key = process.env.NBA2K_API_KEY;
-
-  if (!base || !key) {
-    return NextResponse.json({
-      error: 'Missing env vars',
-      hasBase: !!base,
-      hasKey: !!key,
-    });
-  }
-
-  const url = `${base}/players/search?q=Tatum&limit=5`;
+  const url = `${API_BASE}/players/search?q=Tatum&limit=5`;
 
   try {
-    const res = await fetch(url, { headers: { 'X-API-Key': key } });
+    const res = await fetch(url, { headers: { 'X-API-Key': API_KEY } });
     const text = await res.text();
     let json: unknown = null;
     try { json = JSON.parse(text); } catch {}
@@ -24,7 +14,8 @@ export async function GET() {
       status: res.status,
       ok: res.ok,
       url,
-      keyPrefix: key.slice(0, 6) + '...',
+      envKeySet: !!process.env.NBA2K_API_KEY,
+      envBaseSet: !!process.env.NBA2K_API_BASE,
       isArray: Array.isArray(json),
       topLevelKeys: json && typeof json === 'object' && !Array.isArray(json) ? Object.keys(json as object) : null,
       length: Array.isArray(json) ? (json as unknown[]).length : null,

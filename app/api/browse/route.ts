@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { enrichPlayer } from '../../lib/scoring';
+import { API_KEY, API_BASE } from '../../lib/api-config';
 import type { Player } from '../../types';
 
 const WNBA = ['liberty','fever','sky','sun','mystics','sparks','storm','aces','dream','lynx','mercury','wings','valkyries'];
@@ -16,8 +17,8 @@ async function fetchOne(teamType: string, position: string, minRating: string, m
   if (maxRating) params.set('maxRating', maxRating);
 
   try {
-    const res = await fetch(`${process.env.NBA2K_API_BASE}/players?${params}`, {
-      headers: { 'X-API-Key': process.env.NBA2K_API_KEY! },
+    const res = await fetch(`${API_BASE}/players?${params}`, {
+      headers: { 'X-API-Key': API_KEY },
       next: { revalidate: 300 },
     });
     if (!res.ok) return [];

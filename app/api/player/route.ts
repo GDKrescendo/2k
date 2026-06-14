@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { enrichPlayer } from '../../lib/scoring';
+import { API_KEY, API_BASE } from '../../lib/api-config';
 import type { Player } from '../../types';
 
 export async function GET(req: NextRequest) {
@@ -7,10 +8,10 @@ export async function GET(req: NextRequest) {
   const teamType = req.nextUrl.searchParams.get('teamType') ?? 'curr';
   if (!slug) return NextResponse.json({ error: 'slug required' }, { status: 400 });
 
-  const url = `${process.env.NBA2K_API_BASE}/players/slug/${encodeURIComponent(slug)}?teamType=${teamType}`;
+  const url = `${API_BASE}/players/slug/${encodeURIComponent(slug)}?teamType=${teamType}`;
   try {
     const res = await fetch(url, {
-      headers: { 'X-API-Key': process.env.NBA2K_API_KEY! },
+      headers: { 'X-API-Key': API_KEY },
       next: { revalidate: 300 },
     });
     if (!res.ok) return NextResponse.json({ error: 'Upstream error' }, { status: res.status });
