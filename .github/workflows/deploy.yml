@@ -1,0 +1,41 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: [main, claude/ghosts-war-room-2k26-qyvo10]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Deploy to Vercel
+        id: deploy
+        run: |
+          URL=$(vercel --token=$VERCEL_TOKEN --yes --prod 2>&1 | tail -1)
+          echo "url=$URL" >> $GITHUB_OUTPUT
+          echo "Deployed: $URL"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Set NBA2K environment variables on Vercel project
+        run: |
+          printf '%s' "2k_1kffanakq1mzhlajad22m5iphjgqsozz" | vercel env add NBA2K_API_KEY production --token=$VERCEL_TOKEN --yes 2>/dev/null || true
+          printf '%s' "https://api.nba2kapi.com/api" | vercel env add NBA2K_API_BASE production --token=$VERCEL_TOKEN --yes 2>/dev/null || true
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Redeploy with env vars active
+        run: vercel --token=$VERCEL_TOKEN --yes --prod
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
